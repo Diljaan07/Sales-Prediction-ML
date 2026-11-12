@@ -65,6 +65,39 @@ if st.button("Predict Sales", type="primary"):
 
     prediction = model.predict(input_data)[0]
 
+    # Chart 1: Advertising budget distribution
+    st.subheader("📊 Your Advertising Budget")
+
+    budget_data = pd.DataFrame(
+        {"Budget": [tv, radio, newspaper]},
+        index=["TV", "Radio", "Newspaper"]
+    )
+
+    st.bar_chart(budget_data)
+
+    # Chart 2: Predicted sales as TV budget changes
+    st.subheader("📈 How TV Advertising Affects Predicted Sales")
+
+    tv_values = list(range(0, 301, 10))
+
+    scenario_data = pd.DataFrame({
+        "TV": tv_values,
+        "radio": [radio] * len(tv_values),
+        "newspaper": [newspaper] * len(tv_values)
+    })
+
+    scenario_predictions = model.predict(scenario_data)
+
+    graph_data = pd.DataFrame({
+        "Predicted Sales": scenario_predictions
+    }, index=tv_values)
+
+    st.line_chart(graph_data)
+    st.caption(
+        "Radio and Newspaper budgets are kept constant. "
+        "Only the TV budget changes in this simulation."
+    )
+
     st.success("Prediction Generated Successfully!")
 
     st.metric(
